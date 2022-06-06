@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<ul>
+    {% for book in books %}
+
+    <div class="book">
+        <h4> {{ book.bookTitle }}</h4>
+
+        <div>
+            <b>Yazar : </b>{{ book.bookAuthor }}
+            <b>Basım Yılı :</b> {{ book.bookYear }}
+        </div>
+    </div>
+
+    {% endfor %}
+</ul>
+
+
+
+
+{% endblock %}
