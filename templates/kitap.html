@@ -6,7 +6,9 @@
     {% for d in veri %}
 
     <div class="book">
-        <h4> {{ d[1] }}</h4>
+
+        <a href = "/book/{{d[0]}}">
+        <h4> {{ d[1] }}</h4></a>
 
         <div>
             <b>Yazar : </b>{{ d[2] }}
@@ -14,9 +16,12 @@
         </div>
 
         <form action="/bookdelete/{{ d[0] }}">
-
             <input type="submit" value="Sil">
+        </form>
 
+
+        <form action="/bookedit/{{ d[0] }}">
+            <input type="submit" value="Guncelle">
         </form>
 
 

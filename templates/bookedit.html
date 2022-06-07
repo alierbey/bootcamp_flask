@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="post">
+    <input type="hidden" name="id" value = "{{ veri[0] }}"><br>
+    <label> Kitap Adı : </label>
+    <input type="text" name="bookTitle" value = "{{ veri[1] }}"><br>
+    <label> Yazar Adı : </label>
+    <input type="text" name="bookAuthor" value = "{{ veri[2] }}"><br>
+    <label> Basım Yılı : </label>
+    <input type="text" name="bookYear" value = "{{ veri[3] }}"><br>
+    <input type="submit">
+</form>
+
+{% endblock %}

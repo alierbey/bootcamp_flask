@@ -1,12 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 
-# from requests import request
+
+# CRUD - Create - Read - Update - Delete
 
 
-con = sqlite3.connect("book.db")
-
-
+# Veri Ekleme Fonksiyonu
 def veriEkle(title, author, year):
     with sqlite3.connect("book.db") as con:
         cur = con.cursor()
@@ -19,6 +18,7 @@ def veriEkle(title, author, year):
 data = []
 
 
+# Verileri listeye çekiyoruz
 def veriAl():
     global data
     with sqlite3.connect("book.db") as con:
@@ -30,15 +30,24 @@ def veriAl():
             print(i)
 
 
-def verisil(id):
-
+# Veri silmek icin kullanılan fonksiyon
+def veriSil(id):
     with sqlite3.connect("book.db") as con:
         cur = con.cursor()
         cur.execute("delete from tblBook where id=?", (id,))
         # data = cur.fetchall()
 
 
-# veriAl()
+def veriGuncelle(id, title, author, year):
+    with sqlite3.connect("book.db") as con:
+        cur = con.cursor()
+        cur.execute("update tblBook set bookTitle = ?, bookAuthor = ?, bookYear = ? where id = ?",
+                    (title, author, year, id,))
+        con.commit()
+    print("Veriler Guncellendi...")
+
+
+veriAl()
 # print("---")
 # print(data)
 app = Flask(__name__)
@@ -68,7 +77,29 @@ def index():
 
 @app.route("/book/<string:id>")
 def bookdetail(id):
-    return "book id :" + id
+    detayveri = []
+    for d in data:
+        if str(d[0]) == id:
+            detayveri = list(d)
+    return render_template("kitapdetay.html", veri=detayveri)
+
+
+@app.route("/bookedit/<string:id>", methods=["GET", "POST"])
+def bookedit(id):
+    if request.method == "POST":
+        id = request.form["id"]
+        bookTitle = request.form["bookTitle"]
+        bookAuthor = request.form["bookAuthor"]
+        bookYear = request.form["bookYear"]
+        print("Guncellenecek Veriler : ", bookTitle, bookAuthor, bookYear)
+        veriGuncelle(id, bookTitle, bookAuthor, bookYear)
+        return redirect(url_for("kitap"))
+    else:
+        guncellenecekveri = []
+        for d in data:
+            if str(d[0]) == id:
+                guncellenecekveri = list(d)
+        return render_template("bookedit.html", veri=guncellenecekveri)
 
 
 @app.route("/contact")
@@ -86,6 +117,12 @@ def blog():
     return render_template("blog.html")
 
 
+# http method
+# POST - Veri ekleyeveğimiz
+# GET - veri talep ediyorsunuz
+# PUT - update
+# DELETE - silmek
+
 @app.route("/bookadd", methods=["POST", "GET"])
 def bookadd():
     if request.method == "POST":
@@ -93,7 +130,7 @@ def bookadd():
         bookAuthor = request.form["bookAuthor"]
         bookYear = request.form["bookYear"]
 
-        print(bookTitle, bookAuthor, bookYear)
+        print("Eklenecek Veriler : ", bookTitle, bookAuthor, bookYear)
         veriEkle(bookTitle, bookAuthor, bookYear)
 
     return render_template("bookadd.html")
@@ -107,7 +144,7 @@ def kitap():
 
 @app.route("/bookdelete/<string:id>")
 def bookdelete(id):
-    verisil(id)
+    veriSil(id)
     return redirect(url_for("kitap"))
 
 
