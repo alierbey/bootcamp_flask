@@ -1,11 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 
-
-# CRUD - Create - Read - Update - Delete
-
-
 # Veri Ekleme Fonksiyonu
+
+
 def veriEkle(title, author, year):
     with sqlite3.connect("book.db") as con:
         cur = con.cursor()
@@ -37,6 +35,8 @@ def veriSil(id):
         cur.execute("delete from tblBook where id=?", (id,))
         # data = cur.fetchall()
 
+# Veri guncellemek icin kullanılan fonksiyon
+
 
 def veriGuncelle(id, title, author, year):
     with sqlite3.connect("book.db") as con:
@@ -48,8 +48,6 @@ def veriGuncelle(id, title, author, year):
 
 
 veriAl()
-# print("---")
-# print(data)
 app = Flask(__name__)
 
 
