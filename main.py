@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sqlite3
 
 # Veri Ekleme Fonksiyonu
@@ -144,6 +144,27 @@ def kitap():
 def bookdelete(id):
     veriSil(id)
     return redirect(url_for("kitap"))
+
+
+@app.route("/api", methods=["GET"])
+def api():
+    veriAl()
+    print(data)
+    veri = [{'id': str(row[0]), 'bookTitle': row[1],
+             'bookAuthor': row[2], 'bookYear': row[3]} for row in data]
+    return jsonify(veri)
+
+
+@app.route("/api/add", methods=["POST"])
+def apiAdd():
+    bookTitle = request.form['bookTitle']
+    bookAuthor = request.form['bookAuthor']
+    bookYear = request.form['bookYear']
+    veriEkle(bookTitle, bookAuthor, bookYear)
+
+    message = 'The book has been successfully saved.'
+
+    return jsonify({'status': 'success', 'result': message})
 
 
 if __name__ == "__main__":
